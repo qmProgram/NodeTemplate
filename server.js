@@ -90,8 +90,8 @@ app.use(function (err, req, res, next) {
 // Start the app by listening on the port
 const port = process.env.PORT || config.port;
 const httpServer = http.createServer(app);
-httpServer.listen(3000, () => {
-  console.log(`Express app started on port ${port}`);
+httpServer.listen(3002, () => {
+  console.log(`Express app started on port ${3002}`);
 });
 
 // Initialize logger

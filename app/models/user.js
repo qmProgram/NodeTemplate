@@ -1,8 +1,8 @@
-"use strict";
+'use strict'
 
-const mongoose = require("mongoose");
-const crypto = require("crypto");
-const mongoosePaginate = require("mongoose-paginate");
+const mongoose = require('mongoose')
+const crypto = require('crypto')
+const mongoosePaginate = require('mongoose-paginate')
 
 const userSchema = new mongoose.Schema(
   {
@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    prompts: [],
     sex: {
       type: String,
       required: false,
@@ -51,44 +52,44 @@ const userSchema = new mongoose.Schema(
     //fix pushAll mongodb new version problem
     usePushEach: true,
   }
-);
+)
 userSchema
-  .virtual("password")
+  .virtual('password')
   .set(function (password) {
-    this._password = password;
-    this.salt = this.makeSalt();
-    this.hashed_password = this.encryptPassword(password);
+    this._password = password
+    this.salt = this.makeSalt()
+    this.hashed_password = this.encryptPassword(password)
   })
   .get(function () {
-    return this._password;
-  });
+    return this._password
+  })
 userSchema.methods = {
   //check if the passwords are the same
   authenticate(plainText) {
-    return this.encryptPassword(plainText) === this.hashed_password;
+    return this.encryptPassword(plainText) === this.hashed_password
   },
   makeSalt() {
-    return crypto.randomBytes(16).toString("base64");
+    return crypto.randomBytes(16).toString('base64')
   },
 
   encryptPassword(password) {
-    if (!password || !this.salt) return "";
-    const salt = Buffer.from(this.salt, "base64");
+    if (!password || !this.salt) return ''
+    const salt = Buffer.from(this.salt, 'base64')
     return crypto
-      .pbkdf2Sync(password, salt, 10000, 64, "sha512")
-      .toString("base64");
+      .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+      .toString('base64')
   },
   exists(query) {
-    return this.findOne(query).then((result) => !!result);
+    return this.findOne(query).then((result) => !!result)
   },
   toJson() {
-    this.hashed_password = undefined;
-    this.salt = undefined;
-    return this;
+    this.hashed_password = undefined
+    this.salt = undefined
+    return this
   },
-};
-userSchema.statics = {};
+}
+userSchema.statics = {}
 
-userSchema.plugin(mongoosePaginate);
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+userSchema.plugin(mongoosePaginate)
+const User = mongoose.model('User', userSchema)
+module.exports = User
