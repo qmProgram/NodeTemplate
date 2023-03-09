@@ -13,6 +13,7 @@ specifiers:
   favicon: ~0.0.2
   forever: ~0.10.11
   grunt-cli: ~1.2.0
+  https-proxy-agent: ^5.0.1
   jade: ~1.0.2
   jsonwebtoken: ~7.4.3
   lodash: ^4.17.21
@@ -42,6 +43,7 @@ dependencies:
   express-rate-limiter: 1.3.1
   favicon: 0.0.2
   grunt-cli: 1.2.0
+  https-proxy-agent: 5.0.1
   jade: 1.0.2
   jsonwebtoken: 7.4.3
   lodash: 4.17.21
@@ -924,6 +926,15 @@ packages:
     resolution: {integrity: sha512-pXK8ez/pVjqFdAgBkF1YPVRacuLQ9EXBKaKWaeh58WNfMkCmZhOZzu+NtKSPD5PHmCCHheQ5cD29qM1K4QTxIg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+    dev: false
+
+  /agent-base/6.0.2:
+    resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
+    engines: {node: '>= 6.0.0'}
+    dependencies:
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /ajv/6.12.6:
@@ -2015,6 +2026,16 @@ packages:
       assert-plus: 1.0.0
       jsprim: 1.4.2
       sshpk: 1.17.0
+    dev: false
+
+  /https-proxy-agent/5.0.1:
+    resolution: {integrity: sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==}
+    engines: {node: '>= 6'}
+    dependencies:
+      agent-base: 6.0.2
+      debug: 4.3.4
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /i/0.3.7:
