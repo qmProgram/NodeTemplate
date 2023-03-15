@@ -1,35 +1,24 @@
 'use strict'
 
-const OpenAi = require('../controllers/openai')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
 const { generateText } = require('../../config/openai')
+const axios = require('axios')
 
 module.exports = function (app, passport) {
-    
   app.post('/prompt', async (req, res) => {
     try {
       const { prompt, options, id } = req.body
-      console.log(prompt, 'prompt')
+
       if (!prompt) {
         throw new Error('Message is empty')
       }
+
       User.findOne({ id: 'admin' }).then((user) => {
         user.prompts = prompt
         return user.save()
       })
-      const detail = await generateText(prompt)
-
-      const data = {
-        conversationId: options.conversationId,
-        parentMessageId: options.parentMessageId,
-        detail,
-        role: 'assistant',
-        text: detail?.choices[0].text || '请稍后再试',
-        id: detail?.id,
-      }
-
-      res.send({ message: null, status: 'Success', data })
+      res.send({ message: null, status: 'Success' })
     } catch (err) {
       console.error(err)
       res.status(500).send({ message: err.message, status: 'Fail' })
@@ -44,18 +33,33 @@ module.exports = function (app, passport) {
       if (!prompt) {
         throw new Error('Message is empty')
       }
+      const user = await User.findOne({ id: 'admin' })
+      const prompts = []
+      user.prompts.map((pm, _) => {
+        prompts.push(
+          { content: pm.title, role: 'user' },
+          { content: pm.text, role: 'assistant' }
+        )
+      })
+      const detailRes = await axios({
+        url: 'http://chat.qimengmeta.com/chat',
+        method: 'post',
+        data: {
+          prompt: prompts,
+          message: prompt,
+          options: {},
+        },
+      })
+      //   const datares = {
+      //     conversationId: options.conversationId,
+      //     parentMessageId: options.parentMessageId,
+      //     detail: detailRes.data,
+      //     role: 'assistant',
+      //     text: detailRes.data.text,
+      //     id: detailRes.data.id,
+      //   }
 
-      const detail = await generateChat(prompt)
-      const data = {
-        conversationId: options.conversationId,
-        parentMessageId: options.parentMessageId,
-        detail,
-        role: 'assistant',
-        text: detail.choices[0].message.content,
-        id: detail.id,
-      }
-
-      res.send({ message: null, status: 'Success', data })
+      res.send({ message: null, status: 'Success', data: detailRes.data })
     } catch (err) {
       console.log(err)
       res.status(500).send({ message: err.message, status: 'Fail' })

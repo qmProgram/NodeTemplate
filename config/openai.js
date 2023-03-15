@@ -1,11 +1,11 @@
 const { OpenAIApi } = require('openai')
-const HttpsProxyAgent = require('https-proxy-agent')
+// const HttpsProxyAgent = require('https-proxy-agent')
 const configuration = require('./openaiConfig')
-const agent = new HttpsProxyAgent({
-  hostname: 'https://open.aiproxy.xyz',
-  port: '3128',
-})
-const openai = new OpenAIApi(configuration, 'https://open.aiproxy.xyz')
+// const agent = new HttpsProxyAgent({
+//   hostname: 'https://open.aiproxy.xyz',
+//   port: '3128',
+// })
+const openai = new OpenAIApi(configuration)
 
 async function generateText(message) {
   const completion = await openai.createCompletion({
