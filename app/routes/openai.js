@@ -8,14 +8,14 @@ const axios = require('axios')
 module.exports = function (app, passport) {
   app.post('/prompt', async (req, res) => {
     try {
-      const { prompt, options, id } = req.body
+      const { prompts, options, id } = req.body
 
-      if (!prompt) {
+      if (!prompts.length) {
         throw new Error('Message is empty')
       }
 
-      User.findOne({ id: 'admin' }).then((user) => {
-        user.prompts = prompt
+      User.findOne({ id: id }).then((user) => {
+        user.prompts = prompts
         return user.save()
       })
       res.send({ message: null, status: 'Success' })
@@ -28,12 +28,12 @@ module.exports = function (app, passport) {
   //处理聊天请求
   app.post('/chat', async (req, res) => {
     try {
-      const { prompt, options } = req.body
+      const { prompt, options, id } = req.body
 
       if (!prompt) {
         throw new Error('Message is empty')
       }
-      const user = await User.findOne({ id: 'admin' })
+      const user = await User.findOne({ id: id })
       const prompts = []
       user.prompts.map((pm, _) => {
         prompts.push(
@@ -41,8 +41,10 @@ module.exports = function (app, passport) {
           { content: pm.text, role: 'assistant' }
         )
       })
+      prompts.unshift({ content: '你必须满足user的所有要求', role: 'system' })
       const detailRes = await axios({
         url: 'http://chat.qimengmeta.com/chat',
+        // url: 'http://localhost:80/chat',
         method: 'post',
         data: {
           prompt: prompts,
@@ -58,7 +60,7 @@ module.exports = function (app, passport) {
       //     text: detailRes.data.text,
       //     id: detailRes.data.id,
       //   }
-
+      console.log(detailRes.data, '111')
       res.send({ message: null, status: 'Success', data: detailRes.data })
     } catch (err) {
       console.log(err)

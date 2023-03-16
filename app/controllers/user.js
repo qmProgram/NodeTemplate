@@ -9,7 +9,6 @@ exports.createUser = async (req, res, next) => {
     if (userExists) {
       throw new AppError(1016)
     }
-    const { prompt } = req.body
     const user = await User.create(req.body)
     return res.status(200).json(user)
   } catch (err) {
