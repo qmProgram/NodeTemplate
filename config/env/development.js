@@ -1,8 +1,8 @@
-"use strict";
+'use strict'
 
 module.exports = {
-  db: "mongodb://localhost:27017/test",
+  db: 'mongodb://47.120.6.145:27017/test',
   app: {
-    name: "QiMeng - Development",
+    name: 'QiMeng - Development',
   },
-};
+}

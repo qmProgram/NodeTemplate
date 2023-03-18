@@ -52,16 +52,8 @@ module.exports = function (app, passport) {
           options: {},
         },
       })
-      //   const datares = {
-      //     conversationId: options.conversationId,
-      //     parentMessageId: options.parentMessageId,
-      //     detail: detailRes.data,
-      //     role: 'assistant',
-      //     text: detailRes.data.text,
-      //     id: detailRes.data.id,
-      //   }
       console.log(detailRes.data, '111')
-      res.send({ message: null, status: 'Success', data: detailRes.data })
+      res.send({ message: null, status: 'Success', data: detailRes.data.data })
     } catch (err) {
       console.log(err)
       res.status(500).send({ message: err.message, status: 'Fail' })
