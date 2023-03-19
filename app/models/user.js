@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
     prompts: [],
+    chat: [],
     sex: {
       type: String,
       required: false,
