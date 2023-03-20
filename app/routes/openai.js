@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const User = mongoose.model('User')
 const { generateText } = require('../../config/openai')
 const axios = require('axios')
+const OpenAi = require('../controllers/openai')
 
 module.exports = function (app, passport) {
   app.post('/prompt', async (req, res) => {
@@ -30,18 +31,13 @@ module.exports = function (app, passport) {
     try {
       const { prompt, options, id } = req.body
       const user = await User.findOne({ id: id })
-      const prompts = []
+      let prompts = []
+
       if (!prompt) {
         throw new Error('Message is empty')
       }
 
-      user.prompts.map((pm, _) => {
-        prompts.push(
-          { content: pm.title, role: 'user' },
-          { content: pm.text, role: 'assistant' }
-        )
-      })
-      prompts.unshift({ content: '你必须满足user的所有要求', role: 'system' })
+      prompts = await OpenAi.sendPrompts(user, prompt)
       const detailRes = await axios({
         url: 'http://chat.qimengmeta.com/chat',
         method: 'post',
@@ -51,11 +47,10 @@ module.exports = function (app, passport) {
           options: options,
         },
       })
-      user.chat.unshift(
+      user.chat.push(
         { content: prompt, role: 'user' },
         { content: detailRes.data.data.text, role: 'assistant' }
       )
-      console.log(detailRes.data,user.chat)
       await user.save()
       res.send({ message: null, status: 'Success', data: detailRes.data.data })
     } catch (err) {
@@ -65,6 +60,39 @@ module.exports = function (app, passport) {
   })
 
   app.post('/config', async (req, res) => {
+    res.send({
+      type: 'Success',
+      data: {
+        apiMode: 'ChatGPTAPI',
+        reverseProxy: '',
+        timeoutMs: 60000,
+      },
+    })
+  })
+
+  app.post('/newChat', async (req, res) => {
+    res.send({
+      type: 'Success',
+      data: {
+        apiMode: 'ChatGPTAPI',
+        reverseProxy: '',
+        timeoutMs: 60000,
+      },
+    })
+  })
+
+  app.post('/clearChat', async (req, res) => {
+    res.send({
+      type: 'Success',
+      data: {
+        apiMode: 'ChatGPTAPI',
+        reverseProxy: '',
+        timeoutMs: 60000,
+      },
+    })
+  })
+
+  app.delete('/removeChat', async (req, res) => {
     res.send({
       type: 'Success',
       data: {
